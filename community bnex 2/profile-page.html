@@ -1,58 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Unique Chat Platform</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>موقع تحويل الملفات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #00ff88;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .file-input, .format-select {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .file-input::file-selector-button {
+            background: #00ff88;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #1e3c72;
+            font-weight: bold;
+        }
+
+        .convert-btn {
+            background: #00ff88;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: #1e3c72;
+            margin-top: 1rem;
+        }
+
+        .convert-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .progress {
+            display: none;
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #00ff88;
+        }
+
+        .download-link {
+            display: none;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #00ff88;
+            color: #1e3c72;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        body.dark {
+            background: linear-gradient(135deg, #0f2027, #203a43);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="navbar">
-        <div class="logo">MyChat</div>
-        <nav>
-            <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#join">Join Us</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section class="welcome">
-            <h1>Welcome to MyChat</h1>
-            <p>The ultimate platform for seamless communication with a unique twist!</p>
-            <button onclick="showAlert()">Get Started</button>
-        </section>
-        <section id="features" class="features">
-            <h2>Features</h2>
-            <div class="feature-list">
-                <div class="feature">
-                    <h3>Customizable Themes</h3>
-                    <p>Personalize your chat experience.</p>
-                </div>
-                <div class="feature">
-                    <h3>Advanced Notifications</h3>
-                    <p>Never miss a message!</p>
-                </div>
-                <div class="feature">
-                    <h3>Unique Gamification</h3>
-                    <p>Earn rewards for active participation.</p>
-                </div>
-            </div>
-        </section>
-        <section id="about" class="about">
-            <h2>About Us</h2>
-            <p>We are redefining the way people communicate online with innovative features and unmatched usability.</p>
-        </section>
-        <section id="join" class="join">
-            <h2>Join Us</h2>
-            <p>Sign up today and be part of the future of online communication!</p>
-            <button>Sign Up</button>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 MyChat. All rights reserved.</p>
-    </footer>
-    <script src="script.js"></script>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    <div class="container">
+        <h1>تحويل الملفات بسهولة</h1>
+        <input type="file" id="fileInput" class="file-input" accept="*/*">
+        <select id="formatSelect" class="format-select">
+            <option value="">اختر الصيغة المطلوبة</option>
+            <option value="mp3">MP3</option>
+            <option value="wav">WAV</option>
+            <option value="mp4">MP4</option>
+            <option value="avi">AVI</option>
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+        </select>
+        <button class="convert-btn" onclick="convertFile()">تحويل الآن</button>
+        <div class="progress" id="progress">جاري التحويل...</div>
+        <a class="download-link" id="downloadLink" href="#" download>تحميل الملف المحول</a>
+    </div>
+
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js"></script>
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+        }
+
+        // FFmpeg Setup
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
+        let isConverting = false;
+
+        async function convertFile() {
+            if (isConverting) return;
+
+            const fileInput = document.getElementById('fileInput');
+            const formatSelect = document.getElementById('formatSelect');
+            const progress = document.getElementById('progress');
+            const downloadLink = document.getElementById('downloadLink');
+
+            if (!fileInput.files[0] || !formatSelect.value) {
+                alert('يرجى اختيار ملف وصيغة للتحويل');
+                return;
+            }
+
+            isConverting = true;
+            progress.style.display = 'block';
+            downloadLink.style.display = 'none';
+
+            const file = fileInput.files[0];
+            const outputFormat = formatSelect.value;
+            const outputName = `output.${outputFormat}`;
+
+            try {
+                if (!ffmpeg.isLoaded()) {
+                    await ffmpeg.load();
+                }
+
+                ffmpeg.FS('writeFile', file.name, await fetchFile(file));
+                await ffmpeg.run('-i', file.name, outputName);
+
+                const data = ffmpeg.FS('readFile', outputName);
+                const url = URL.createObjectURL(new Blob([data.buffer], { type: `application/${outputFormat}` }));
+
+                downloadLink.href = url;
+                downloadLink.download = outputName;
+                downloadLink.style.display = 'inline-block';
+                progress.style.display = 'none';
+            } catch (error) {
+                console.error(error);
+                alert('حدث خطأ أثناء التحويل');
+                progress.style.display = 'none';
+            } finally {
+                isConverting = false;
+            }
+        }
+    </script>
 </body>
 </html>
